@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  couchdb1:
+    image: "couchdb:3"
+    logging:
+      driver: none
+    ports:
+      - "5984:5984"
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: a-secret
+    network_mode: host
+
+  couchdb2:
+    image: "couchdb:3"
+    logging:
+      driver: none
+    ports:
+      - "5985:5984"
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: a-secret
+    network_mode: host
