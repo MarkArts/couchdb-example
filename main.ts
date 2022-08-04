@@ -125,6 +125,15 @@ const bookDesing = {
   },
 };
 
+// couchdb structures data by using design docs. A design doc is a
+// couchdb document, which means it has a id and revision too, that defines
+// among others map and reduce functions. The map functions can be used to
+// filter out data to a specific type / version / key. and the reduce can be used
+// to generate statisics on that data
+// (for example the number of unique authors in the databas)
+// In this view we create 2 maps with a couchdb default reduce function called `_stats`
+// the 2 views will keep the same structure but index the books by author and title
+// so we can query by them or reduce them
 console.log(JSON.stringify(bookDesing));
 console.log("Create the view in the database");
 const BOOKDESIGN = "_design/books";
