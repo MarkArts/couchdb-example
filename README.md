@@ -20,5 +20,5 @@ plugin
 ## How to run
 
 ```
-deno run main.ts
+deno run --allow-net main.ts
 ```

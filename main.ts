@@ -48,13 +48,23 @@ const createFirstDocument = await fetch(
   },
 );
 const createFirstDocumentResp = await logResponse(createFirstDocument);
+
+// After creating our first document couchdb will respond with 2 values
+// we need to keep track of. The document id and the revision.
+// The id is used to get and update the created object and the revision is
+// used to prevent update conflicts between client.
 const myFirstDocId: string = createFirstDocumentResp.id;
 const myFirstDocRev: string = createFirstDocumentResp.rev;
 
+// After the document is created we can get the document with the ID we stored
+// notice that in the resonse the revision is still the same as when we created it
 console.log("Get the document to show the docId and revision");
 const getMyFirstDoc = await fetch(`${COUCHDB}/${DBNAME}/${myFirstDocId}`);
 await logResponse(getMyFirstDoc);
 
+// If we want to update a document we can send a PUT /mydb/myDocId
+// request. If we do this without sending a revision we get the
+// following error:
 console.log("Update the document without Rev to show the error");
 const updateWithoutRef = await fetch(`${COUCHDB}/${DBNAME}/${myFirstDocId}`, {
   method: "POST",
@@ -64,6 +74,11 @@ const updateWithoutRef = await fetch(`${COUCHDB}/${DBNAME}/${myFirstDocId}`, {
 });
 await logResponse(updateWithoutRef);
 
+// To prevent clients from making conflicting updates couchdb forces clients to
+// send a revision id with their update. After a update has completed this revision
+// will change and updated with the old revision id will fail.
+// We will do 2 updated here but with the same revision to show that one of
+// them will suceed while the other will return a 409 response with a documen conflict error
 console.log("Update the document twice to show conflict on Rev");
 const update1 = await fetch(`${COUCHDB}/${DBNAME}/${myFirstDocId}`, {
   method: "PUT",
@@ -84,6 +99,7 @@ const update2 = await fetch(`${COUCHDB}/${DBNAME}/${myFirstDocId}`, {
 await logResponse(update1);
 await logResponse(update2);
 
+// To showcase how views work we will first populate the db with some documents
 console.log("Populate the db with some books");
 const books = await createSomebooks();
 console.log(`Created books: ${books}`);
